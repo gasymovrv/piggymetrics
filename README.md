@@ -1,4 +1,3 @@
-
 # Перед прочтением
 ************
 Для разворачивания инфраструктуры необходимо на компьютер установить Java8, Docker, Docker Compose.
@@ -222,6 +221,9 @@ public interface StatisticsServiceClient {
 
 - Установите Docker и Docker Compose
 - Экспортируйте переменные окружения: CONFIG_SERVICE_PASSWORD, NOTIFICATION_SERVICE_PASSWORD, STATISTICS_SERVICE_PASSWORD, ACCOUNT_SERVICE_PASSWORD, MONGODB_PASSWORD
+
+Разворачивание инфраструктуры может занять продолжительное время, проверить что все поднялось можно открыв в барузере  UI  http://localhost:80 
+
 
 ####Production mode
 
