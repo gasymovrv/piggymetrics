@@ -1,26 +1,31 @@
-[![Build Status](https://travis-ci.org/sqshq/PiggyMetrics.svg?branch=master)](https://travis-ci.org/sqshq/PiggyMetrics)
-[![codecov.io](https://codecov.io/github/sqshq/PiggyMetrics/coverage.svg?branch=master)](https://codecov.io/github/sqshq/PiggyMetrics?branch=master)
-[![GitHub license](https://img.shields.io/github/license/mashape/apistatus.svg)](https://github.com/sqshq/PiggyMetrics/blob/master/LICENCE)
-[![Join the chat at https://gitter.im/sqshq/PiggyMetrics](https://badges.gitter.im/sqshq/PiggyMetrics.svg)](https://gitter.im/sqshq/PiggyMetrics?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
+# Перед прочтением
+************
+Для разворачивания инфраструктуры необходимо на компьютер установить Java8, Docker, Docker Compose.
+
+https://www.docker.com/products/docker-desktop
+
+Также рекомендую установить Kitematic - UI для управления/мониторинга образов докера 
+
+https://kitematic.com
+
+Скачивание/установка/регистрация в докере может занять время поэтому советую начать это делать перед прочтением.
 # Piggy Metrics
 
-**A simple way to deal with personal finances**
 
-This is a [proof-of-concept application](https://piggymetrics.tk), which demonstrates [Microservice Architecture Pattern](http://martinfowler.com/microservices/) using Spring Boot, Spring Cloud and Docker.
-With a pretty neat user interface, by the way.
+Демо-риложение созданное для демонстрации микросервисной архетиктуры позволяет организовать личные финансы: вносить регулярные доходы и расходы, следить за накоплениями, считать статистику и прогнозы.
 
 ![](https://cloud.githubusercontent.com/assets/6069066/13864234/442d6faa-ecb9-11e5-9929-34a9539acde0.png)
 ![Piggy Metrics](https://cloud.githubusercontent.com/assets/6069066/13830155/572e7552-ebe4-11e5-918f-637a49dff9a2.gif)
 
-## Functional services
+## Функциональные сервисы
 
-PiggyMetrics was decomposed into three core microservices. All of them are independently deployable applications, organized around certain business domains.
+Приложение состоит из несколько основных микросервисов, каждый из которых отвечает за определенную бизнес-задачу.
 
 <img width="880" alt="Functional services" src="https://cloud.githubusercontent.com/assets/6069066/13900465/730f2922-ee20-11e5-8df0-e7b51c668847.png">
 
 #### Account service
-Contains general user input logic and validation: incomes/expenses items, savings and account settings.
+Реализует логику и валидацию по сохранению доходов, расходов, накоплений и настроек аккаунта.
 
 Method	| Path	| Description	| User authenticated	| Available from UI
 ------------- | ------------------------- | ------------- |:-------------:|:----------------:|
@@ -32,7 +37,7 @@ POST	| /accounts/	| Register new account	|   | ×
 
 
 #### Statistics service
-Performs calculations on major statistics parameters and captures time series for each account. Datapoint contains values, normalized to base currency and time period. This data is used to track cash flow dynamics in account lifetime.
+Производит расчет основных статистических параметров аккаунта, приводит их значения к базовой валюте и периоду, сохраняет данные в виде, удобном для последующего анализа. Полученный временной ряд будет использован для отображения пользователю статистики и показателей за прошедшее время и экстраполяции для простейших прогнозов на будущее.
 
 Method	| Path	| Description	| User authenticated	| Available from UI
 ------------- | ------------------------- | ------------- |:-------------:|:----------------:|
@@ -43,30 +48,32 @@ PUT	| /statistics/{account}	| Create or update time series datapoint for specifi
 
 
 #### Notification service
-Stores users contact information and notification settings (like remind and backup frequency). Scheduled worker collects required information from other services and sends e-mail messages to subscribed customers.
+Хранит настройки уведомлений (частоты напоминаний, периодичность бекапов). По расписанию производит рассылку e-mail сообщений, предварительно собирая и агрегируя нужные данные у первых двух сервисов, если требуется.
 
 Method	| Path	| Description	| User authenticated	| Available from UI
 ------------- | ------------------------- | ------------- |:-------------:|:----------------:|
 GET	| /notifications/settings/current	| Get current account notification settings	| × | ×	
 PUT	| /notifications/settings/current	| Save current account notification settings	| × | ×
 
-#### Notes
-- Each microservice has its own database, so there is no way to bypass API and access persistance data directly.
-- In this project, I use MongoDB as a primary database for each service. It might also make sense to have a polyglot persistence architecture (сhoose the type of db that is best suited to service requirements).
-- Service-to-service communication is quite simplified: microservices talking using only synchronous REST API. Common practice in a real-world systems is to use combination of interaction styles. For example, perform synchronous GET request to retrieve data and use asynchronous approach via Message broker for create/update operations in order to decouple services and buffer messages. However, this brings us to the [eventual consistency](http://martinfowler.com/articles/microservice-trade-offs.html#consistency) world.
+#### Примечания
 
-## Infrastructure services
-There's a bunch of common patterns in distributed systems, which could help us to make described core services work. [Spring cloud](http://projects.spring.io/spring-cloud/) provides powerful tools that enhance Spring Boot applications behaviour to implement those patterns. I'll cover them briefly.
+- Все микросервисы имеют свою собственную БД, соответственно любой доступ к данным можно получить только через API приложения.
+- В этом проекте для простоты я использовал только MongoDB как основную БД для каждого из сервисов. На практике может оказаться полезным подход, называемый Polyglot persistence — выбор хранилища, наиболее подходящего для задач конкретного сервиса.
+- Коммуникация между сервисами также существенно упрощена: используются только синхронные rest-запросы. Общепринятой практикой является комбинирование различных способов взаимодействия. Например, синхронные GET-запросы для получения информации и асинхронные запросы с использованием сервера очередей — для create/update операций. Что, кстати, переносит нас в мир eventual consistency — один из важных аспектов распределенных систем, с которым приходится жить.
+
+## Инфраструктурные сервисы
+
+Для обеспечения совместной работы описанных выше сервисов будем использовать набор основных паттернов и практик Микросервисной архитектуры. Многие из них реализованы в Spring Cloud (в частности, посредством интеграции с продуктами Netflix OSS) — на деле это зависимости, расширяющие возможности Spring Boot в ту или иную сторону. Ниже кратко рассмотрен каждый из компонентов.
+
 <img width="880" alt="Infrastructure services" src="https://cloud.githubusercontent.com/assets/6069066/13906840/365c0d94-eefa-11e5-90ad-9d74804ca412.png">
-### Config service
-[Spring Cloud Config](http://cloud.spring.io/spring-cloud-config/spring-cloud-config.html) is horizontally scalable centralized configuration service for distributed systems. It uses a pluggable repository layer that currently supports local storage, Git, and Subversion. 
 
-In this project, I use `native profile`, which simply loads config files from the local classpath. You can see `shared` directory in [Config service resources](https://github.com/sqshq/PiggyMetrics/tree/master/config/src/main/resources). Now, when Notification-service requests its configuration, Config service responses with `shared/notification-service.yml` and `shared/application.yml` (which is shared between all client applications).
+### Config service
+[Spring Cloud Config](http://cloud.spring.io/spring-cloud-config/spring-cloud-config.html) — это горизонтально масштабируемое хранилище конфигураций для распределенной системы. В качестве источника данных на данный момент поддерживаются Git, Subversion и простые файлы, хранящиеся локально. По умолчанию Spring Cloud Config отдает файлы, соответствующие имени запрашивающего Spring приложения (но можно забирать проперти под конкретный Spring profile и из определенной ветки системы контроля версий).
+
+На практике наибольший интерес представляет загрузка конфигураций из систем котроля версий, но здесь для простоты будем использовать локальные файлы. Поместим дирректорию shared в класспасе приложения, в которой будут хранится конфигурационные файлы для всех приложений в кластере. Например, если Notification service запросит конфигурацию, Config server ответит ему содержимым файла shared/notification-service.yml, смердженным с shared/application.yml (который является общим для всех).path. You can see `shared` directory in [Config service resources](https://github.com/sqshq/PiggyMetrics/tree/master/config/src/main/resources). Now, when Notification-service requests its configuration, Config service responses with `shared/notification-service.yml` and `shared/application.yml` (which is shared between all client applications).
 
 ##### Client side usage
-Just build Spring Boot application with `spring-cloud-starter-config` dependency, autoconfiguration will do the rest.
-
-Now you don't need any embedded properties in your application. Just provide `bootstrap.yml` with application name and Config service url:
+На стороне клиентского приложения теперь не требуются никаких конфигурационных файлов, кроме bootstrap.yml с именем приложения и адресом Config server:
 ```yml
 spring:
   application:
@@ -77,30 +84,32 @@ spring:
       fail-fast: true
 ```
 
-##### With Spring Cloud Config, you can change app configuration dynamically. 
-For example, [EmailService bean](https://github.com/sqshq/PiggyMetrics/blob/master/notification-service/src/main/java/com/piggymetrics/notification/service/EmailServiceImpl.java) was annotated with `@RefreshScope`. That means, you can change e-mail text and subject without rebuild and restart Notification service application.
+##### Spring Cloud Config позволяет изменять конфигурацию динамически. Например, бин EmailService, помеченный аннотацией @RefreshScope, может начать рассылать измененный текст e-mail сообщения без пересборки.
 
-First, change required properties in Config server. Then, perform refresh request to Notification service:
+Для этого следует внести правки в конфигурационный файл Config server, а затем выполнить следующий запрос к Notification service:
 `curl -H "Authorization: Bearer #token#" -XPOST http://127.0.0.1:8000/notifications/refresh`
 
-Also, you could use Repository [webhooks to automate this process](http://cloud.spring.io/spring-cloud-config/spring-cloud-config.html#_push_notifications_and_spring_cloud_bus)
+Этот процесс можно автоматизировать, если использовать загрузку конфигураций из систем контроля версий, настроив вебхук из Github, Gitlub или Bitbucket.
+##### Примечания
 
-##### Notes
-- There are some limitations for dynamic refresh though. `@RefreshScope` doesn't work with `@Configuration` classes and doesn't affect `@Scheduled` methods
-- `fail-fast` property means that Spring Boot application will fail startup immediately, if it cannot connect to the Config Service.
-- There are significant [security notes](https://github.com/sqshq/PiggyMetrics#security) below
+
+- К сожалению, есть существенные ограничения на динамическое обновление конфигурации. @RefreshScope не работает для @Configuration классов и методов, отмеченных аннотацией @Scheduled
+- Свойство fail-fast, упомянутое в bootstrap.yml означает, что приложение остановит загрузку сразу же, если нет соединения с Config Server. Это пригодится нам при одновременном старте всей инфраструктуры.
+- Продвинутые настройки безопасности выходят за рамки этого концепт-пруф приложения. Spring Security предоставляет широкие возможности для реализации механизмов обеспечения безопасности. Использование JCE keystore для шифрования паролей микросервисов и информации в конфигурационных файлах подробно описаны в документации.
 
 ### Auth service
-Authorization responsibilities are completely extracted to separate server, which grants [OAuth2 tokens](https://tools.ietf.org/html/rfc6749) for the backend resource services. Auth Server is used for user authorization as well as for secure machine-to-machine communication inside a perimeter.
+Обязанности по авторизации полностью вынесены в отдельное приложение, которое выдает OAuth2 токены для доступа к ресурсам бэкенда. Auth server используется как для авторизации пользователей, так и для защищенного общения сервис-сервис внутри периметра.
 
-In this project, I use [`Password credentials`](https://tools.ietf.org/html/rfc6749#section-4.3) grant type for users authorization (since it's used only by native PiggyMetrics UI) and [`Client Credentials`](https://tools.ietf.org/html/rfc6749#section-4.4) grant for microservices authorization.
+На самом деле, здесь описан только один из возможных подходов. Spring Cloud и Spring Security позволяют достаточно гибко настраивать конфигурацию под ваши нужды (например, имеет смысл проводить авторизацию на стороне API Gateway, а внутрь инфраструктуры передавать запрос с уже заполненными данными пользователя).
 
-Spring Cloud Security provides convenient annotations and autoconfiguration to make this really easy to implement from both server and client side. You can learn more about it in [documentation](http://cloud.spring.io/spring-cloud-security/spring-cloud-security.html) and check configuration details in [Auth Server code](https://github.com/sqshq/PiggyMetrics/tree/master/auth-service/src/main/java/com/piggymetrics/auth).
+В этом проекте я использую Password credential grant type для авторизации пользователей и Client credentials grant type — для авторизации между сервисами.
 
-From the client side, everything works exactly the same as with traditional session-based authorization. You can retrieve `Principal` object from request, check user's roles and other stuff with expression-based access control and `@PreAuthorize` annotation.
+Spring Cloud Security предоставляет удобные аннотации и автоконфигурацию, что позволяет достаточно просто реализовать описанный функционал как со стороны клиента, так и со стороны авторизационного сервера.
 
-Each client in PiggyMetrics (account-service, statistics-service, notification-service and browser) has a scope: `server` for backend services, and `ui` - for the browser. So we can also protect controllers from external access, for example:
+Со стороны клиента это ничем не отличается от традиционной авторизации с помощью сессий. Из запроса можно получить объект Principal, проверить роли и другие параметры с использованием аннотации @PreAuthorize.
 
+
+Кроме того, каждое OAuth2-приложение имеет scope: для бэкенд-сервисов — server, для браузера — ui. Так мы можем ограничить доступ к некоторым эндпоинтам извне:
 ``` java
 @PreAuthorize("#oauth2.hasScope('server')")
 @RequestMapping(value = "accounts/{name}", method = RequestMethod.GET)
@@ -110,14 +119,15 @@ public List<DataPoint> getStatisticsByAccountName(@PathVariable String name) {
 ```
 
 ### API Gateway
-As you can see, there are three core services, which expose external API to client. In a real-world systems, this number can grow very quickly as well as whole system complexity. Actually, hundreds of services might be involved in rendering of one complex webpage.
+Все три основных сервиса, которые мы обсудили выше, предоставляют для внешнего пользователя некоторый API. В промышленных системах, построенных на Микросервисной архитектуре, число компонентов растет быстро — поговаривают, что в Амазоне в рендеринг страницы вовлечены порядка 150 сервисов.
 
-In theory, a client could make requests to each of the microservices directly. But obviously, there are challenges and limitations with this option, like necessity to know all endpoints addresses, perform http request for each piece of information separately, merge the result on a client side. Another problem is non web-friendly protocols which might be used on the backend.
+Гипотетически, клиентское приложение могло бы запрашивать каждый из сервисов самостоятельно. Но такой подход сразу натыкается на массу ограничений — необходимость знать адрес каждого эндпоинта, делать запрос за каждым куском информации отдельно и самостоятельно мерджить результат. Кроме того, не все приложения не бэкенде могут поддерживать дружественные вебу протоколы, и прочее прочее.
 
-Usually a much better approach is to use API Gateway. It is a single entry point into the system, used to handle requests by routing them to the appropriate backend service or by invoking multiple backend services and [aggregating the results](http://techblog.netflix.com/2013/01/optimizing-netflix-api.html). Also, it can be used for authentication, insights, stress and canary testing, service migration, static response handling, active traffic management.
+Для решения такого рода проблем применяют API Gateway — единую точку входа. Ее используют для приема внешних запросов и маршрутизации в нужные сервисы внутренней инфраструктуры, отдачи статического контента, аутентификации, стресс тестирования, канареечного развертывания, миграции сервисов, динамического управления трафиком. У Netflix если блог-пост об оптимизации своего API за счет асинхронной аггрегации контента из разных микросервисов.
 
-Netflix opensourced [such an edge service](http://techblog.netflix.com/2013/06/announcing-zuul-edge-service-in-cloud.html), and now with Spring Cloud we can enable it with one `@EnableZuulProxy` annotation. In this project, I use Zuul to store static content (ui application) and to route requests to appropriate microservices. Here's a simple prefix-based routing configuration for Notification service:
+Netflix заопенсорсила свою имплементацию API Gateway — Zuul. Spring Cloud нативно интегрирован с ним и включается добавлением одной зависимости и аннотациии @EnableZuulProxy в Spring Boot приложение. В этом проекте Zuul используется для самых элементарных задач — отдачи статики (веб-приложение) и роутинга запросов.
 
+Пример префиксной маршрутизации для Notification service:
 ```yml
 zuul:
   routes:
@@ -128,48 +138,39 @@ zuul:
 
 ```
 
-That means all requests starting with `/notifications` will be routed to Notification service. There is no hardcoded address, as you can see. Zuul uses [Service discovery](https://github.com/sqshq/PiggyMetrics/blob/master/README.md#service-discovery) mechanism to locate Notification service instances and also [Circuit Breaker and Load Balancer](https://github.com/sqshq/PiggyMetrics/blob/master/README.md#http-client-load-balancer-and-circuit-breaker), described below.
+Теперь каждый запрос, uri которого начинается на /notifications, будет направлен в соответствующий сервис.
 
 ### Service discovery
 
-Another commonly known architecture pattern is Service discovery. It allows automatic detection of network locations for service instances, which could have dynamically assigned addresses because of auto-scaling, failures and upgrades.
+Еще один широко известный паттерн для распределенных систем. Service discovery позволяет автоматически определять сетевые адреса для доступных инстансов приложений, которые могут динамически изменяться по причинам масштабирования, падений и обновлений.
 
-The key part of Service discovery is Registry. I use Netflix Eureka in this project. Eureka is a good example of the client-side discovery pattern, when client is responsible for determining locations of available service instances (using Registry server) and load balancing requests across them.
+Ключевым звеном здесь является Registry service. В этом проекте я использую Netflix Eureka (но есть еще Consul, Zookeeper, Etcd и другие). Eureka — пример client-side discovery паттерна, что означает клиент должен запросить адреса доступных инстансов и осуществлять балансировку между ними самостоятельно.
 
-With Spring Boot, you can easily build Eureka Registry with `spring-cloud-starter-eureka-server` dependency, `@EnableEurekaServer` annotation and simple configuration properties.
-
-Client support enabled with `@EnableDiscoveryClient` annotation an `bootstrap.yml` with application name:
+Чтобы превратить Spring Boot приложение в Registry server, достаточно добавить зависимость на spring-cloud-starter-eureka-server и аннотацию @EnableEurekaServer. На стороне клиентов — зависимость spring-cloud-starter-eureka, аннотацию @EnableDiscoveryClient и имя приложения (serviceId) в bootstrap.yml:
 ``` yml
 spring:
   application:
     name: notification-service
 ```
 
-Now, on application startup, it will register with Eureka Server and provide meta-data, such as host and port, health indicator URL, home page etc. Eureka receives heartbeat messages from each instance belonging to a service. If the heartbeat fails over a configurable timetable, the instance will be removed from the registry.
-
-Also, Eureka provides a simple interface, where you can track running services and a number of available instances: `http://localhost:8761`
-
+Теперь инстанс приложения при старте будет регистрироваться в Eureka, предоставляя мета-данные (такие как хост, порт и прочее). Eureka будет принимать хартбит-сообщения, и если их нет в течении сконфигурированного времени — инстанс будет удален из реестра. Кроме того, Eureka предоставляет дашборд, на котором видны зарегистрированные приложения с количеством инстансов и другая техническая информация: http://localhost:8761
 ### Load balancer, Circuit breaker and Http client
 
-Netflix OSS provides another great set of tools. 
+Следующий набор инструментов тоже разработан в Netflix и нативно интегрирован в Spring Cloud. Все они работают совместно и используются в микросервисах, которым нужно общаться с внешним миром или внутренней инфраструктурой.
 
 #### Ribbon
-Ribbon is a client side load balancer which gives you a lot of control over the behaviour of HTTP and TCP clients. Compared to a traditional load balancer, there is no need in additional hop for every over-the-wire invocation - you can contact desired service directly.
-
-Out of the box, it natively integrates with Spring Cloud and Service Discovery. [Eureka Client](https://github.com/sqshq/PiggyMetrics#service-discovery) provides a dynamic list of available servers so Ribbon could balance between them.
-
+Ribbon — это client-side балансировщик. По сравнению с традиционным, здесь запросы проходят напрямую по нужному адресу, что исключает лишний узел при вызове. Из коробки он интегрирован с механизмом Service Discovery, который предоставляет динамический список доступных инстансов для балансировки между ними.
 #### Hystrix
-Hystrix is the implementation of [Circuit Breaker pattern](http://martinfowler.com/bliki/CircuitBreaker.html), which gives a control over latency and failure from dependencies accessed over the network. The main idea is to stop cascading failures in a distributed environment with a large number of microservices. That helps to fail fast and recover as soon as possible - important aspects of fault-tolerant systems that self-heal.
+HHystrix — это имплементация паттерна Circuit Breaker — предохранителя, который дает контроль над задержками и ошибками при вызовах по сети. Основная идея состоит в том, чтобы остановить каскадный отказ в распределенной системе, состоящей из большого числа компонентов. Это позволяет отдавать ошибку как можно быстрее, не задерживаясь при запросе к зависшему сервису (давая ему восстановится).
 
-Besides circuit breaker control, with Hystrix you can add a fallback method that will be called to obtain a default value in case the main command fails.
+Помимо контроля за размыканием цепи, Hystrix позволяет определить fallback-метод, который будет вызван при неуспешном вызове. Тем самым можно отдавать дефолтный ответ, сообщение об ошибке, и др.
 
-Moreover, Hystrix generates metrics on execution outcomes and latency for each command, that we can use to [monitor system behavior](https://github.com/sqshq/PiggyMetrics#monitor-dashboard).
+На каждый запрос Hystrix генерирует набор метрик (таких как скорость выполнения, результат), что позволяет анализировать общее состоянее системы. Ниже будет рассмотрен мониторинг на основе данных метрик.
 
 #### Feign
-Feign is a declarative Http client, which seamlessly integrates with Ribbon and Hystrix. Actually, with one `spring-cloud-starter-feign` dependency and `@EnableFeignClients` annotation you have a full set of Load balancer, Circuit breaker and Http client with sensible ready-to-go default configuration.
+Feign — простой и гибкий http-клиент, который нативно интегрирован с Ribbon и Hystrix. Проще говоря, имея в класспасе зависимость spring-cloud-starter-feign и активировав клиент аннотацией @EnableFeignClients, вы получаете полный набор из балансировщика, предохранителя и клиента, готовый к бою с разумной дефолтной конфигурацией.
 
-Here is an example from Account Service:
-
+Вот пример из Account Service:
 ``` java
 @FeignClient(name = "statistics-service")
 public interface StatisticsServiceClient {
@@ -180,95 +181,68 @@ public interface StatisticsServiceClient {
 }
 ```
 
-- Everything you need is just an interface
-- You can share `@RequestMapping` part between Spring MVC controller and Feign methods
-- Above example specifies just desired service id - `statistics-service`, thanks to autodiscovery through Eureka (but obviously you can access any resource with a specific url)
+- Все что нужно — объявить интерфейс
+- Как обычно, мы просто указываем имя сервиса (благодаря механизму Service Discovery), но конечно можно обращаться и к произвольному url
+- @RequestMapping вместе с содержимым можно оставлять единой для @FeignClient и @Controller в Spring MVC
 
-### Monitor dashboard
+### Панель мониторинга
 
-In this project configuration, each microservice with Hystrix on board pushes metrics to Turbine via Spring Cloud Bus (with AMQP broker). The Monitoring project is just a small Spring boot application with [Turbine](https://github.com/Netflix/Turbine) and [Hystrix Dashboard](https://github.com/Netflix/Hystrix/tree/master/hystrix-dashboard).
+Метрики, которые генерит Hystrix, можно отдавать наружу, включив в класспас зависимость spring-boot-starter-actuator. Помимо прочих интересных вещей, будет выставлен специальный эндпоинт — /hystrix.stream. Этот стрим можно визуализировать с помощью Hystrix dashboard, о котором мы подробно поговорим ниже. Для включения Hystrix Dashboard понадобится зависимость spring-cloud-starter-hystrix-dashboard и аннотация @EnableHystrixDashboard. Hystrix Dashboard можно натравить на стрим любого микросервиса для наблюдения живой картины происходящего в этом конкретном сервисе.
 
-See below [how to get it up and running](https://github.com/sqshq/PiggyMetrics#how-to-run-all-the-things).
+Однако в нашем случае сервисов несколько, и было бы здорово видеть все их метрики в одном месте. Для этого существует специальное решение. Каждый из наших сервисов будет пушить свои стримы в AMQP брокер (RabbitMQ), откуда аггрегатор стримов, Turbine, будет преобразовывать их, выставляя единый эндпоинт для Hystrix Dashboard.
 
-Let's see our system behavior under load: Account service calls Statistics service and it responses with a vary imitation delay. Response timeout threshold is set to 1 second.
-
+Рассмотрим поведение системы под нагрузкой: Account service вызывает Statistics Service, и тот отвечает с варьируемой имитационной задержкой. Пороговое значение времени запроса установлено в 1 секунду.
 <img width="880" src="https://cloud.githubusercontent.com/assets/6069066/14194375/d9a2dd80-f7be-11e5-8bcc-9a2fce753cfe.png">
 
 <img width="212" src="https://cloud.githubusercontent.com/assets/6069066/14127349/21e90026-f628-11e5-83f1-60108cb33490.gif">	| <img width="212" src="https://cloud.githubusercontent.com/assets/6069066/14127348/21e6ed40-f628-11e5-9fa4-ed527bf35129.gif"> | <img width="212" src="https://cloud.githubusercontent.com/assets/6069066/14127346/21b9aaa6-f628-11e5-9bba-aaccab60fd69.gif"> | <img width="212" src="https://cloud.githubusercontent.com/assets/6069066/14127350/21eafe1c-f628-11e5-8ccd-a6b6873c046a.gif">
 --- |--- |--- |--- |
 | `0 ms delay` | `500 ms delay` | `800 ms delay` | `1100 ms delay`
-| Well behaving system. The throughput is about 22 requests/second. Small number of active threads in Statistics service. The median service time is about 50 ms. | The number of active threads is growing. We can see purple number of thread-pool rejections and therefore about 30-40% of errors, but circuit is still closed. | Half-open state: the ratio of failed commands is more than 50%, the circuit breaker kicks in. After sleep window amount of time, the next request is let through. | 100 percent of the requests fail. The circuit is now permanently open. Retry after sleep time won't close circuit again, because the single request is too slow.
+| Система работает без ошибок. Пропускная способность порядка 22 з/с. Небольшое число активных потоков в Statistics service. Среднее время получения ответа — 50 мс | Число активных потоков увеличивается. Фиолетовая цифра показывает число отклоненных запросов, соответственно порядка 30-40% ошибок, но цепь все еще замкнута. |Полуоткрытое состояние: процент ошибок более 50%, предохранитель размыкает цепь. После определенного таймаута, цепь замыкается, но снова ненадолго. | 100% запросов с ошибками. Цепь разомкнута постоянно, попытки пропустить запрос спустя таймаут ничего не меняют — каждый отдельный запрос слишком медленный.
+### Анализ логов
 
-### Log analysis
+В инфраструктуре, состоящей из большого количества движущихся частей (каждая из которых может иметь по нескольку экземпляров), очень важно использовать систему централизированного сбора, обработки и анализа логов. Elasticsearch, Logstash и Kibana составляют стeк, с помощью которого можно эффективно решать такую задачу.
 
-Centralized logging can be very useful when attempting to identify problems in a distributed environment. Elasticsearch, Logstash and Kibana stack lets you search and analyze your logs, utilization and network activity data with ease.
-Ready-to-go Docker configuration described [in my other project](http://github.com/sqshq/ELK-docker).
+Готовая к запуску Docker-конфигурация ELK с Куратором и шаблонами для шипперов доступна на гитхабе. Именно такая конфигурация, с небольшой кастомизацией и масштабированием, успешно работает в продакшене на моем текущем проекте для анализа логов, сетевой активности и мониторинга производительности серверов.
 
-### Distributed tracing
+## Автоматизация инфраструктуры
 
-Analyzing problems in distributed systems can be difficult, for example, tracing requests that propagate from one microservice to another. It can be quite a challenge to try to find out how a request travels through the system, especially if you don't have any insight into the implementation of a microservice. Even when there is logging, it is hard to tell which action correlates to a single request.
+Развертывание микросервисной системы с большим количеством движущихся частей и взаимосвязанностью — задача очевидно более комплексная, нежели деплой монолитного приложения. Без автоматизированной инфраструктуры вся история превратится в бесконечную боль и трату времени. Это тема для совершенно отдельного разговора, я лишь покажу простейший Сontinuous delivery воркфлоу, реализованный в этом проекте на бесплатных версиях сервисов:
 
-[Spring Cloud Sleuth](https://cloud.spring.io/spring-cloud-sleuth/) solves this problem by providing support for distributed tracing. It adds two types of IDs to the logging: traceId and spanId. The spanId represents a basic unit of work, for example sending an HTTP request. The traceId contains a set of spans forming a tree-like structure. For example, with a distributed big-data store, a trace might be formed by a PUT request. Using traceId and spanId for each operation we know when and where our application is as it processes a request, making reading our logs much easier. 
-
-The logs are as follows, notice the `[appname,traceId,spanId,exportable]` entries from the Slf4J MDC:
-
-```text
-2018-07-26 23:13:49.381  WARN [gateway,3216d0de1384bb4f,3216d0de1384bb4f,false] 2999 --- [nio-4000-exec-1] o.s.c.n.z.f.r.s.AbstractRibbonCommand    : The Hystrix timeout of 20000ms for the command account-service is set lower than the combination of the Ribbon read and connect timeout, 80000ms.
-2018-07-26 23:13:49.562  INFO [account-service,3216d0de1384bb4f,404ff09c5cf91d2e,false] 3079 --- [nio-6000-exec-1] c.p.account.service.AccountServiceImpl   : new account has been created: test
-```
-
-- *`appname`*: The name of the application that logged the span from the property `spring.application.name`
-- *`traceId`*: This is an ID that is assigned to a single request, job, or action
-- *`spanId`*: The ID of a specific operation that took place
-- *`exportable`*: Whether the log should be exported to [Zipkin](https://zipkin.io/)
-
-## Security
-
-An advanced security configuration is beyond the scope of this proof-of-concept project. For a more realistic simulation of a real system, consider to use https, JCE keystore to encrypt Microservices passwords and Config server properties content (see [documentation](http://cloud.spring.io/spring-cloud-config/spring-cloud-config.html#_security) for details).
-
-## Infrastructure automation
-
-Deploying microservices, with their interdependence, is much more complex process than deploying monolithic application. It is important to have fully automated infrastructure. We can achieve following benefits with Continuous Delivery approach:
-
-- The ability to release software anytime
-- Any build could end up being a release
-- Build artifacts once - deploy as needed
-
-Here is a simple Continuous Delivery workflow, implemented in this project:
 
 <img width="880" src="https://cloud.githubusercontent.com/assets/6069066/14159789/0dd7a7ce-f6e9-11e5-9fbb-a7fe0f4431e3.png">
 
-In this [configuration](https://github.com/sqshq/PiggyMetrics/blob/master/.travis.yml), Travis CI builds tagged images for each successful git push. So, there are always `latest` image for each microservice on [Docker Hub](https://hub.docker.com/r/sqshq/) and older images, tagged with git commit hash. It's easy to deploy any of them and quickly rollback, if needed.
+Последний этап — это образно, продакшена для проекта не предполагается.
+К корне репозитория находится .travis.yml файл с указаниями для CI сервера — что делать после удачной сборки. В данной конфигурации на каждый успешный пуш в Github, Travis CI соберет докер-образы, пометит их тегом и запушит в Docker Hub. Теперь получается, что у нас всегда есть готовые к деплою контейнеры, помеченные тегом latest, а также контейнеры со старыми версиями, версиями из любых веток.
+## Запуск
 
-## How to run all the things?
+Если вы дочитали до этого места, возможно вам будет интересно запустить все это своими руками. Хочу отметить, что инфраструктура состоит из 8 Spring Boot приложений, 4 инстансов MongoDB и одного RabbitMQ. Убедитесь, что в системе доступны 3-4 Гб памяти. Всегда можно запустить ограничиться самым необходимым функционалом — отказаться от Statistics service, Notification Service и Monitoring.
 
-Keep in mind, that you are going to start 8 Spring Boot applications, 4 MongoDB instances and RabbitMq. Make sure you have `4 Gb` RAM available on your machine. You can always run just vital services though: Gateway, Registry, Config, Auth Service and Account Service.
 
-#### Before you start
-- Install Docker and Docker Compose.
-- Export environment variables: `CONFIG_SERVICE_PASSWORD`, `NOTIFICATION_SERVICE_PASSWORD`, `STATISTICS_SERVICE_PASSWORD`, `ACCOUNT_SERVICE_PASSWORD`, `MONGODB_PASSWORD` (make sure they were exported: `printenv`)
-- Make sure to build the project: `mvn package [-DskipTests]`
+###Прежде чем начать
 
-#### Production mode
-In this mode, all latest images will be pulled from Docker Hub.
-Just copy `docker-compose.yml` and hit `docker-compose up`
+- Установите Docker и Docker Compose
+- Экспортируйте переменные окружения: CONFIG_SERVICE_PASSWORD, NOTIFICATION_SERVICE_PASSWORD, STATISTICS_SERVICE_PASSWORD, ACCOUNT_SERVICE_PASSWORD, MONGODB_PASSWORD
+
+####Production mode
+
+В этом режиме все предварительно собранные образы загружаются из центрального репозитория (в данном случае Docker Hub), порты проброшены наружу докера только для API Gateway, Service Discovery, Monitoring и RabbitMQ management. Все что вам понадобится — это docker-compose файл и команда docker-compose up -d.
+
 
 #### Development mode
-If you'd like to build images yourself (with some changes in the code, for example), you have to clone all repository and build artifacts with maven. Then, run `docker-compose -f docker-compose.yml -f docker-compose.dev.yml up`
+В режиме разработки предполагается строить образы, а не забирать их из репозитория. Все контейнеры выставлены наружу для удобного дебага. Эта конфигурация наследуется от приведенной выше, перезаписывая и расширяя указанные моменты. Запускается командой docker-compose -f docker-compose.yml -f docker-compose.dev.yml up -d
+
 
 `docker-compose.dev.yml` inherits `docker-compose.yml` with additional possibility to build images locally and expose all containers ports for convenient development.
 
-#### Important endpoints
-- http://localhost:80 - Gateway
+#### Точки входа
+- http://localhost:80 - Gateway - UI приложения
 - http://localhost:8761 - Eureka Dashboard
 - http://localhost:9000/hystrix - Hystrix Dashboard (Turbine stream link: `http://turbine-stream-service:8080/turbine/turbine.stream`)
 - http://localhost:15672 - RabbitMq management (default login/password: guest/guest)
 
-#### Notes
-All Spring Boot applications require already running [Config Server](https://github.com/sqshq/PiggyMetrics#config-service) for startup. But we can start all containers simultaneously because of `depends_on` docker-compose option.
+#### Примечания
 
-Also, Service Discovery mechanism needs some time after all applications startup. Any service is not available for discovery by clients until the instance, the Eureka server and the client all have the same metadata in their local cache, so it could take 3 heartbeats. Default heartbeat period is 30 seconds.
+- Всем Spring Boot приложениям в этом проекте для старта необходим доступный Config Server. Благодаря опции fail-fast в bootstrap.yml каждого приложения и опции restart: always в докере, контейнеры можно запускать одновременно (они будут автоматически продолжать попытки старта, пока не поднимется Config Server).
 
-## Contributions are welcome!
+- Механизм Service Discovery так же требует некоторого времени для начала полноценной работы. Сервис не доступен для вызова, пока он сам, Eureka и клиент не имеют одну и ту же мета-информацию у себя локально — на это требуется 3 хартбита. По умолчанию период времени между хартбитами составляет 30 секунд.
 
-PiggyMetrics is open source, and would greatly appreciate your help. Feel free to suggest and implement improvements.
