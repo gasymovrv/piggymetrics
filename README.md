@@ -217,7 +217,7 @@ public interface StatisticsServiceClient {
 Если вы дочитали до этого места, возможно вам будет интересно запустить все это своими руками. Хочу отметить, что инфраструктура состоит из 8 Spring Boot приложений, 4 инстансов MongoDB и одного RabbitMQ. Убедитесь, что в системе доступны 3-4 Гб памяти. Всегда можно запустить ограничиться самым необходимым функционалом — отказаться от Statistics service, Notification Service и Monitoring.
 
 
-###Прежде чем начать
+### Прежде чем начать
 
 - Установите Docker и Docker Compose
 - Экспортируйте переменные окружения: CONFIG_SERVICE_PASSWORD, NOTIFICATION_SERVICE_PASSWORD, STATISTICS_SERVICE_PASSWORD, ACCOUNT_SERVICE_PASSWORD, MONGODB_PASSWORD
@@ -225,7 +225,7 @@ public interface StatisticsServiceClient {
 Разворачивание инфраструктуры может занять продолжительное время, проверить что все поднялось можно открыв в барузере  UI  http://localhost:80 
 
 
-####Production mode
+#### Production mode
 
 В этом режиме все предварительно собранные образы загружаются из центрального репозитория (в данном случае Docker Hub), порты проброшены наружу докера только для API Gateway, Service Discovery, Monitoring и RabbitMQ management. Все что вам понадобится — это docker-compose файл и команда docker-compose up -d.
 
@@ -240,7 +240,7 @@ public interface StatisticsServiceClient {
 - http://localhost:80 - Gateway - UI приложения
 - http://localhost:8761 - Eureka Dashboard
 - http://localhost:9000/hystrix - Hystrix Dashboard (Turbine stream link: `http://turbine-stream-service:8080/turbine/turbine.stream`)
-- http://localhost:15672 - RabbitMq management (default login/password: guest/guest)
+- http://localhost:15672 - RabbitMQ management (default login/password: guest/guest)
 
 #### Примечания
 
