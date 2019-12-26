@@ -19,7 +19,7 @@ https://kitematic.com
 # Piggy Metrics
 
 
-Демо-риложение созданное для демонстрации микросервисной архетиктуры позволяет организовать личные финансы: вносить регулярные доходы и расходы, следить за накоплениями, считать статистику и прогнозы.
+Демо-приложение созданное для демонстрации микросервисной архетиктуры позволяет организовать личные финансы: вносить регулярные доходы и расходы, следить за накоплениями, считать статистику и прогнозы.
 
 ![](https://cloud.githubusercontent.com/assets/6069066/13864234/442d6faa-ecb9-11e5-9929-34a9539acde0.png)
 ![Piggy Metrics](https://cloud.githubusercontent.com/assets/6069066/13830155/572e7552-ebe4-11e5-918f-637a49dff9a2.gif)
@@ -224,7 +224,7 @@ public interface StatisticsServiceClient {
 Если вы дочитали до этого места, возможно вам будет интересно запустить все это своими руками. Хочу отметить, что инфраструктура состоит из 8 Spring Boot приложений, 4 инстансов MongoDB и одного RabbitMQ. Убедитесь, что в системе доступны 3-4 Гб памяти. Всегда можно запустить ограничиться самым необходимым функционалом — отказаться от Statistics service, Notification Service и Monitoring.
 
 
-###Прежде чем начать
+### Прежде чем начать
 
 - Установите Docker и Docker Compose
 - Экспортируйте переменные окружения: CONFIG_SERVICE_PASSWORD, NOTIFICATION_SERVICE_PASSWORD, STATISTICS_SERVICE_PASSWORD, ACCOUNT_SERVICE_PASSWORD, MONGODB_PASSWORD
@@ -232,7 +232,7 @@ public interface StatisticsServiceClient {
 Разворачивание инфраструктуры может занять продолжительное время, проверить что все поднялось можно открыв в барузере  UI  http://localhost:80 
 
 
-####Production mode
+#### Production mode
 
 В этом режиме все предварительно собранные образы загружаются из центрального репозитория (в данном случае Docker Hub), порты проброшены наружу докера только для API Gateway, Service Discovery, Monitoring и RabbitMQ management. Все что вам понадобится — это docker-compose файл и команда docker-compose up -d.
 
@@ -247,7 +247,7 @@ public interface StatisticsServiceClient {
 - http://localhost:80 - Gateway - UI приложения
 - http://localhost:8761 - Eureka Dashboard
 - http://localhost:9000/hystrix - Hystrix Dashboard (Turbine stream link: `http://turbine-stream-service:8080/turbine/turbine.stream`)
-- http://localhost:15672 - RabbitMq management (default login/password: guest/guest)
+- http://localhost:15672 - RabbitMQ management (default login/password: guest/guest)
 
 #### Примечания
 
