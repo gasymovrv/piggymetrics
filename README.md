@@ -1,4 +1,5 @@
 **Статья проекта на Хабре:** https://habr.com/ru/post/280786/
+**Оригинал:** https://github.com/sqshq/PiggyMetrics
 
 # Перед прочтением
 ************
