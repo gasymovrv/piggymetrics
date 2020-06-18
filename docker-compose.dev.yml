@@ -30,10 +30,10 @@ services:
     ports:
       - 6000:6000
 
-  account-mongodb:
-    build: mongodb
+  account-postgres:
+    build: postgresdb
     ports:
-      - 26000:27017
+      - 5432:5432
 
   statistics-service:
     build: statistics-service
