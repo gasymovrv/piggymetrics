@@ -1,35 +1,45 @@
 package com.piggymetrics.account.domain;
 
-import org.codehaus.jackson.annotate.JsonIgnoreProperties;
-import org.hibernate.validator.constraints.Length;
-import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.Document;
-
-import javax.validation.Valid;
-import javax.validation.constraints.NotNull;
 import java.util.Date;
 import java.util.List;
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.Id;
+import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
+import javax.persistence.Table;
+import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
+import org.codehaus.jackson.annotate.JsonIgnoreProperties;
+import org.hibernate.validator.constraints.Length;
 
-@Document(collection = "accounts")
+@Entity
+@Table(name = "account")
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Account {
 
 	@Id
 	private String name;
 
-	private Date lastSeen;
+    @Column(name = "last_seen")
+    private Date lastSeen;
 
 	@Valid
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
 	private List<Item> incomes;
 
 	@Valid
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
 	private List<Item> expenses;
 
 	@Valid
 	@NotNull
+    @OneToOne(cascade = CascadeType.ALL)
 	private Saving saving;
 
-	@Length(min = 0, max = 20_000)
+    @Length(max = 20_000)
 	private String note;
 
 	public String getName() {
