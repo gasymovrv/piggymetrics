@@ -18,7 +18,7 @@ import static org.hamcrest.Matchers.containsString;
 @RunWith(SpringRunner.class)
 @SpringBootTest(properties = {
         "feign.hystrix.enabled=true"
-})
+}, classes = StatisticsServiceClientFallback.class)
 public class StatisticsServiceClientFallbackTest {
     @Autowired
     private StatisticsServiceClient statisticsServiceClient;
