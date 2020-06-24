@@ -15,6 +15,9 @@ docker build -t gateway .
 cd ../mongodb
 docker build -t mongodb .
 
+cd ../postgresdb
+docker build -t postgresdb .
+
 cd ../monitoring
 docker build -t monitoring .
 

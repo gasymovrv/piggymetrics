@@ -29,6 +29,10 @@ services:
     build: account-service
     ports:
       - 6000:6000
+      - 7771:7771
+    environment:
+      JAVA_OPTS: "-Xmx200m -agentlib:jdwp=transport=dt_socket,address=7771,server=y,suspend=n"
+      DEBUG_PORT: 7771
 
   account-postgres:
     build: postgresdb
