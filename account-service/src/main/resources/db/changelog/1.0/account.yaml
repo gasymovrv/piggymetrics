@@ -1,0 +1,31 @@
+databaseChangeLog:
+
+  - changeSet:
+      id: 000000-create-table-account
+      author: Gasymov Ruslan
+      changes:
+        - createTable:
+            tableName: account
+            columns:
+              - column: { name: name, type: varchar(255) }
+              - column: { name: last_seen, type: timestamp }
+              - column: { name: note, type: varchar(20000) }
+              - column: { name: saving_id, type: bigint }
+
+  - changeSet:
+      id: 000000-create-constraint-account
+      author: Gasymov Ruslan
+      changes:
+        - addNotNullConstraint:
+            tableName: account
+            columnName: name
+            columnDataType: varchar(255)
+        - addPrimaryKey:
+            columnNames: name
+            tableName: account
+        - addForeignKeyConstraint:
+            baseColumnNames: saving_id
+            baseTableName: account
+            constraintName: fk_saving_id
+            referencedColumnNames: id
+            referencedTableName: saving

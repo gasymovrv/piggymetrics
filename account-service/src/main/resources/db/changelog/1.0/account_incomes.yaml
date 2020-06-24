@@ -1,0 +1,41 @@
+databaseChangeLog:
+
+  - changeSet:
+      id: 000000-create-table-account_incomes
+      author: Gasymov Ruslan
+      changes:
+        - createTable:
+            tableName: account_incomes
+            columns:
+              - column: { name: incomes_id, type: bigint }
+              - column: { name: account_name, type: varchar(255) }
+
+  - changeSet:
+      id: 000000-create-constraint-account_incomes
+      author: Gasymov Ruslan
+      changes:
+        - addNotNullConstraint:
+            tableName: account_incomes
+            columnName: account_name
+            columnDataType: varchar(255)
+        - addNotNullConstraint:
+            tableName: account_incomes
+            columnName: incomes_id
+            columnDataType: bigint
+        - addPrimaryKey:
+            columnNames: incomes_id
+            tableName: account_incomes
+        - addForeignKeyConstraint:
+            baseColumnNames: incomes_id
+            baseTableName: account_incomes
+            constraintName: fk_incomes_id
+            referencedColumnNames: id
+            referencedTableName: item
+            onDelete: CASCADE
+            onUpdate: CASCADE
+        - addForeignKeyConstraint:
+            baseColumnNames: account_name
+            baseTableName: account_incomes
+            constraintName: fk_incomes_account_name
+            referencedColumnNames: name
+            referencedTableName: account

@@ -7,6 +7,7 @@ import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
@@ -14,7 +15,8 @@ import javax.validation.constraints.NotNull;
 @Table(name = "saving")
 public class Saving {
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
+    @SequenceGenerator(name = "saving_seq", sequenceName = "saving_seq", initialValue = 1000)
+    @GeneratedValue(generator = "saving_seq", strategy = GenerationType.SEQUENCE)
 	private long id;
 
 	@NotNull

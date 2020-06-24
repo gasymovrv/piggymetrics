@@ -1,0 +1,33 @@
+databaseChangeLog:
+
+  - changeSet:
+      id: 000000-create-sequence-users
+      author: Gasymov Ruslan
+      changes:
+        - createSequence:
+            sequenceName: users_seq
+            startValue: 1000
+            incrementBy: 50
+
+  - changeSet:
+      id: 000000-create-table-users
+      author: Gasymov Ruslan
+      changes:
+        - createTable:
+            tableName: users
+            columns:
+              - column: { name: id, type: bigint }
+              - column: { name: password, type: varchar(40) }
+              - column: { name: username, type: varchar(20) }
+
+  - changeSet:
+      id: 000000-create-constraint-users
+      author: Gasymov Ruslan
+      changes:
+        - addNotNullConstraint:
+            tableName: users
+            columnName: id
+            columnDataType: bigint
+        - addPrimaryKey:
+            columnNames: id
+            tableName: users

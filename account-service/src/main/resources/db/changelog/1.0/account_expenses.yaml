@@ -1,0 +1,41 @@
+databaseChangeLog:
+
+  - changeSet:
+      id: 000000-create-table-account_expenses
+      author: Gasymov Ruslan
+      changes:
+        - createTable:
+            tableName: account_expenses
+            columns:
+              - column: { name: expenses_id, type: bigint }
+              - column: { name: account_name, type: varchar(255) }
+
+  - changeSet:
+      id: 000000-create-constraint-account_expenses
+      author: Gasymov Ruslan
+      changes:
+        - addNotNullConstraint:
+            tableName: account_expenses
+            columnName: account_name
+            columnDataType: varchar(255)
+        - addNotNullConstraint:
+            tableName: account_expenses
+            columnName: expenses_id
+            columnDataType: bigint
+        - addPrimaryKey:
+            columnNames: expenses_id
+            tableName: account_expenses
+        - addForeignKeyConstraint:
+            baseColumnNames: expenses_id
+            baseTableName: account_expenses
+            constraintName: fk_expenses_id
+            referencedColumnNames: id
+            referencedTableName: item
+            onDelete: CASCADE
+            onUpdate: CASCADE
+        - addForeignKeyConstraint:
+            baseColumnNames: account_name
+            baseTableName: account_expenses
+            constraintName: fk_expenses_account_name
+            referencedColumnNames: name
+            referencedTableName: account

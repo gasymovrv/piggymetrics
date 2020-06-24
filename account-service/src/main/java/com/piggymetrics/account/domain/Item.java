@@ -7,6 +7,7 @@ import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import org.hibernate.validator.constraints.Length;
@@ -15,7 +16,8 @@ import org.hibernate.validator.constraints.Length;
 @Table(name = "item")
 public class Item {
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
+    @SequenceGenerator(name = "item_seq", sequenceName = "item_seq", initialValue = 1000)
+    @GeneratedValue(generator = "item_seq", strategy = GenerationType.SEQUENCE)
 	private long id;
 
 	@NotNull
