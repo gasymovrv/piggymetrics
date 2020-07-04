@@ -1,6 +1,6 @@
 package com.piggymetrics.account.client;
 
-import com.piggymetrics.account.domain.Account;
+import com.piggymetrics.account.domain.entity.Account;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;

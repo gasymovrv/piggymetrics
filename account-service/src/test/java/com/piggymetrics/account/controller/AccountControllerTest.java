@@ -2,12 +2,12 @@ package com.piggymetrics.account.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.ImmutableList;
-import com.piggymetrics.account.domain.Account;
-import com.piggymetrics.account.domain.Currency;
-import com.piggymetrics.account.domain.Item;
-import com.piggymetrics.account.domain.Saving;
-import com.piggymetrics.account.domain.TimePeriod;
-import com.piggymetrics.account.domain.User;
+import com.piggymetrics.account.domain.dto.User;
+import com.piggymetrics.account.domain.entity.Account;
+import com.piggymetrics.account.domain.entity.Item;
+import com.piggymetrics.account.domain.entity.Saving;
+import com.piggymetrics.account.domain.enums.Currency;
+import com.piggymetrics.account.domain.enums.TimePeriod;
 import com.piggymetrics.account.service.AccountService;
 import com.sun.security.auth.UserPrincipal;
 import java.math.BigDecimal;

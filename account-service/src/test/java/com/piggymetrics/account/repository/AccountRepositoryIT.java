@@ -1,10 +1,10 @@
 package com.piggymetrics.account.repository;
 
-import com.piggymetrics.account.domain.Account;
-import com.piggymetrics.account.domain.Currency;
-import com.piggymetrics.account.domain.Item;
-import com.piggymetrics.account.domain.Saving;
-import com.piggymetrics.account.domain.TimePeriod;
+import com.piggymetrics.account.domain.entity.Account;
+import com.piggymetrics.account.domain.entity.Item;
+import com.piggymetrics.account.domain.entity.Saving;
+import com.piggymetrics.account.domain.enums.Currency;
+import com.piggymetrics.account.domain.enums.TimePeriod;
 import com.piggymetrics.account.utils.TestPostgresContainer;
 import java.math.BigDecimal;
 import java.util.Arrays;

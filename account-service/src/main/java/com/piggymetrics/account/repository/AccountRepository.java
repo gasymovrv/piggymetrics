@@ -1,6 +1,6 @@
 package com.piggymetrics.account.repository;
 
-import com.piggymetrics.account.domain.Account;
+import com.piggymetrics.account.domain.entity.Account;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 

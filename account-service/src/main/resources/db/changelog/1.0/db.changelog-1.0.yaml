@@ -5,5 +5,4 @@ databaseChangeLog:
   - include: { relativeToChangelogFile: true, file: account.yaml }
   - include: { relativeToChangelogFile: true, file: account_incomes.yaml }
   - include: { relativeToChangelogFile: true, file: account_expenses.yaml }
-  - include: { relativeToChangelogFile: true, file: users.yaml }
   - include: { relativeToChangelogFile: true, file: demo-dump.yaml }

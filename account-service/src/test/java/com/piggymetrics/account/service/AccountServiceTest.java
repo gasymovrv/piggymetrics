@@ -2,15 +2,19 @@ package com.piggymetrics.account.service;
 
 import com.piggymetrics.account.client.AuthServiceClient;
 import com.piggymetrics.account.client.StatisticsServiceClient;
-import com.piggymetrics.account.domain.*;
+import com.piggymetrics.account.domain.dto.User;
+import com.piggymetrics.account.domain.entity.Account;
+import com.piggymetrics.account.domain.entity.Item;
+import com.piggymetrics.account.domain.entity.Saving;
+import com.piggymetrics.account.domain.enums.Currency;
+import com.piggymetrics.account.domain.enums.TimePeriod;
 import com.piggymetrics.account.repository.AccountRepository;
+import java.math.BigDecimal;
+import java.util.Arrays;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-
-import java.math.BigDecimal;
-import java.util.Arrays;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
