@@ -2,22 +2,25 @@ package com.piggymetrics.account.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.ImmutableList;
-import com.piggymetrics.account.domain.*;
+import com.piggymetrics.account.domain.dto.User;
+import com.piggymetrics.account.domain.entity.Account;
+import com.piggymetrics.account.domain.entity.Item;
+import com.piggymetrics.account.domain.entity.Saving;
+import com.piggymetrics.account.domain.enums.Currency;
+import com.piggymetrics.account.domain.enums.TimePeriod;
 import com.piggymetrics.account.service.AccountService;
 import com.sun.security.auth.UserPrincipal;
+import java.math.BigDecimal;
+import java.util.Date;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-
-import java.math.BigDecimal;
-import java.util.Date;
 
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
@@ -26,7 +29,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @RunWith(SpringRunner.class)
-@SpringBootTest
 public class AccountControllerTest {
 
 	private static final ObjectMapper mapper = new ObjectMapper();

@@ -1,6 +1,6 @@
 package com.piggymetrics.account.client;
 
-import com.piggymetrics.account.domain.User;
+import com.piggymetrics.account.domain.dto.User;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.RequestMapping;

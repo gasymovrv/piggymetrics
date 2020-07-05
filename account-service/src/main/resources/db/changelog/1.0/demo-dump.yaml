@@ -1,0 +1,159 @@
+databaseChangeLog:
+
+  - changeSet:
+      id: 000000-add-demo-account
+      author: Gasymov Ruslan
+      changes:
+        # --------------------- expenses ---------------------
+        - insert:
+            tableName: item
+            columns:
+              - column: {name: id, value: 1}
+              - column: {name: amount, value: 1300}
+              - column: {name: currency, value: USD}
+              - column: {name: icon, value: home}
+              - column: {name: period, value: MONTH}
+              - column: {name: title, value: Rent}
+        - insert:
+            tableName: item
+            columns:
+              - column: {name: id, value: 2}
+              - column: {name: amount, value: 120}
+              - column: {name: currency, value: USD}
+              - column: {name: icon, value: utilities}
+              - column: {name: period, value: MONTH}
+              - column: {name: title, value: Utilities}
+        - insert:
+            tableName: item
+            columns:
+              - column: {name: id, value: 3}
+              - column: {name: amount, value: 20}
+              - column: {name: currency, value: USD}
+              - column: {name: icon, value: meal}
+              - column: {name: period, value: DAY}
+              - column: {name: title, value: Meal}
+        - insert:
+            tableName: item
+            columns:
+              - column: {name: id, value: 4}
+              - column: {name: amount, value: 240}
+              - column: {name: currency, value: USD}
+              - column: {name: icon, value: gas}
+              - column: {name: period, value: MONTH}
+              - column: {name: title, value: Gas}
+        - insert:
+            tableName: item
+            columns:
+              - column: {name: id, value: 5}
+              - column: {name: amount, value: 3500}
+              - column: {name: currency, value: EUR}
+              - column: {name: icon, value: island}
+              - column: {name: period, value: YEAR}
+              - column: {name: title, value: Vacation}
+        - insert:
+            tableName: item
+            columns:
+              - column: {name: id, value: 6}
+              - column: {name: amount, value: 30}
+              - column: {name: currency, value: EUR}
+              - column: {name: icon, value: phone}
+              - column: {name: period, value: MONTH}
+              - column: {name: title, value: Phone}
+        - insert:
+            tableName: item
+            columns:
+              - column: {name: id, value: 7}
+              - column: {name: amount, value: 700}
+              - column: {name: currency, value: USD}
+              - column: {name: icon, value: sport}
+              - column: {name: period, value: YEAR}
+              - column: {name: title, value: Gym}
+
+        # --------------------- incomes ---------------------
+        - insert:
+            tableName: item
+            columns:
+              - column: {name: id, value: 8}
+              - column: {name: amount, value: 42000}
+              - column: {name: currency, value: USD}
+              - column: {name: icon, value: wallet}
+              - column: {name: period, value: YEAR}
+              - column: {name: title, value: Salary}
+        - insert:
+            tableName: item
+            columns:
+              - column: {name: id, value: 9}
+              - column: {name: amount, value: 500}
+              - column: {name: currency, value: USD}
+              - column: {name: icon, value: edu}
+              - column: {name: period, value: MONTH}
+              - column: {name: title, value: Scholarship}
+
+        # --------------------- saving ---------------------
+        - insert:
+            tableName: saving
+            columns:
+              - column: {name: id, value: 1}
+              - column: {name: amount, value: 5900}
+              - column: {name: currency, value: USD}
+              - column: {name: capitalization, value: false}
+              - column: {name: deposit, value: true}
+              - column: {name: interest, value: 3.32}
+
+        # --------------------- account ---------------------
+        - insert:
+            tableName: account
+            columns:
+              - column: {name: name, value: demo}
+              - column: {name: last_seen, value: now()}
+              - column: {name: saving_id, value: 1}
+              - column: {name: note, value: "demo note"}
+
+        # --------------------- account_expenses ---------------------
+        - insert:
+            tableName: account_expenses
+            columns:
+              - column: {name: expenses_id, value: 1}
+              - column: {name: account_name, value: demo}
+        - insert:
+            tableName: account_expenses
+            columns:
+              - column: {name: expenses_id, value: 2}
+              - column: {name: account_name, value: demo}
+        - insert:
+            tableName: account_expenses
+            columns:
+              - column: {name: expenses_id, value: 3}
+              - column: {name: account_name, value: demo}
+        - insert:
+            tableName: account_expenses
+            columns:
+              - column: {name: expenses_id, value: 4}
+              - column: {name: account_name, value: demo}
+        - insert:
+            tableName: account_expenses
+            columns:
+              - column: {name: expenses_id, value: 5}
+              - column: {name: account_name, value: demo}
+        - insert:
+            tableName: account_expenses
+            columns:
+              - column: {name: expenses_id, value: 6}
+              - column: {name: account_name, value: demo}
+        - insert:
+            tableName: account_expenses
+            columns:
+              - column: {name: expenses_id, value: 7}
+              - column: {name: account_name, value: demo}
+
+        # --------------------- account_incomes ---------------------
+        - insert:
+            tableName: account_incomes
+            columns:
+              - column: {name: incomes_id, value: 8}
+              - column: {name: account_name, value: demo}
+        - insert:
+            tableName: account_incomes
+            columns:
+              - column: {name: incomes_id, value: 9}
+              - column: {name: account_name, value: demo}

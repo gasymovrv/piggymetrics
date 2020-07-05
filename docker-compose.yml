@@ -81,7 +81,9 @@ services:
     environment:
       CONFIG_SERVICE_PASSWORD: $CONFIG_SERVICE_PASSWORD
       ACCOUNT_SERVICE_PASSWORD: $ACCOUNT_SERVICE_PASSWORD
-      MONGODB_PASSWORD: $MONGODB_PASSWORD
+      POSTGRES_USER: $ACCOUNT_POSTGRES_USER
+      POSTGRES_PASSWORD: $ACCOUNT_POSTGRES_PASSWORD
+      POSTGRES_DB: $ACCOUNT_POSTGRES_DB
     image: account-service
     restart: always
     depends_on:
@@ -92,16 +94,15 @@ services:
         max-size: "10m"
         max-file: "10"
 
-  account-mongodb:
-    environment:
-      INIT_DUMP: account-service-dump.js
-      MONGODB_PASSWORD: $MONGODB_PASSWORD
-    image: mongodb
+  account-postgres:
+    image: postgresdb
     restart: always
-    logging:
-      options:
-        max-size: "10m"
-        max-file: "10"
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: $ACCOUNT_POSTGRES_USER
+      POSTGRES_PASSWORD: $ACCOUNT_POSTGRES_PASSWORD
+      POSTGRES_DB: $ACCOUNT_POSTGRES_DB
 
   statistics-service:
     environment:

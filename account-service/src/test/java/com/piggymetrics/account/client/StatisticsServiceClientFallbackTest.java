@@ -1,6 +1,6 @@
 package com.piggymetrics.account.client;
 
-import com.piggymetrics.account.domain.Account;
+import com.piggymetrics.account.domain.entity.Account;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -18,7 +18,7 @@ import static org.hamcrest.Matchers.containsString;
 @RunWith(SpringRunner.class)
 @SpringBootTest(properties = {
         "feign.hystrix.enabled=true"
-})
+}, classes = StatisticsServiceClientFallback.class)
 public class StatisticsServiceClientFallbackTest {
     @Autowired
     private StatisticsServiceClient statisticsServiceClient;

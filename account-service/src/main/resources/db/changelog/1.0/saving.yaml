@@ -1,0 +1,36 @@
+databaseChangeLog:
+
+  - changeSet:
+      id: 000000-create-sequence-saving
+      author: Gasymov Ruslan
+      changes:
+        - createSequence:
+            sequenceName: saving_seq
+            startValue: 1000
+            incrementBy: 50
+
+  - changeSet:
+      id: 000000-create-table-saving
+      author: Gasymov Ruslan
+      changes:
+        - createTable:
+            tableName: saving
+            columns:
+              - column: { name: id, type: bigint}
+              - column: { name: amount, type: "numeric(19,2)" }
+              - column: { name: capitalization, type: boolean }
+              - column: { name: currency, type: varchar(255) }
+              - column: { name: deposit, type: boolean }
+              - column: { name: interest, type: "numeric(19,2)" }
+
+  - changeSet:
+      id: 000000-create-constraint-saving
+      author: Gasymov Ruslan
+      changes:
+        - addNotNullConstraint:
+            tableName: saving
+            columnName: id
+            columnDataType: bigint
+        - addPrimaryKey:
+            columnNames: id
+            tableName: saving

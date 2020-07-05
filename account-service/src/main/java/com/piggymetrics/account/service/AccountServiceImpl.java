@@ -2,19 +2,18 @@ package com.piggymetrics.account.service;
 
 import com.piggymetrics.account.client.AuthServiceClient;
 import com.piggymetrics.account.client.StatisticsServiceClient;
-import com.piggymetrics.account.domain.Account;
-import com.piggymetrics.account.domain.Currency;
-import com.piggymetrics.account.domain.Saving;
-import com.piggymetrics.account.domain.User;
+import com.piggymetrics.account.domain.dto.User;
+import com.piggymetrics.account.domain.entity.Account;
+import com.piggymetrics.account.domain.entity.Saving;
+import com.piggymetrics.account.domain.enums.Currency;
 import com.piggymetrics.account.repository.AccountRepository;
+import java.math.BigDecimal;
+import java.util.Date;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
-
-import java.math.BigDecimal;
-import java.util.Date;
 
 @Service
 public class AccountServiceImpl implements AccountService {

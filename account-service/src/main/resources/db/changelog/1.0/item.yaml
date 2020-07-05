@@ -1,0 +1,36 @@
+databaseChangeLog:
+
+  - changeSet:
+      id: 000000-create-sequence-item
+      author: Gasymov Ruslan
+      changes:
+        - createSequence:
+            sequenceName: item_seq
+            startValue: 1000
+            incrementBy: 50
+
+  - changeSet:
+      id: 000000-create-table-item
+      author: Gasymov Ruslan
+      changes:
+        - createTable:
+            tableName: item
+            columns:
+              - column: { name: id, type: bigint }
+              - column: { name: amount, type: "numeric(19,2)" }
+              - column: { name: currency, type: varchar(255) }
+              - column: { name: icon, type: varchar(255) }
+              - column: { name: period, type: varchar(255) }
+              - column: { name: title, type: varchar(20) }
+
+  - changeSet:
+      id: 000000-create-constraint-item
+      author: Gasymov Ruslan
+      changes:
+        - addNotNullConstraint:
+            tableName: item
+            columnName: id
+            columnDataType: bigint
+        - addPrimaryKey:
+            columnNames: id
+            tableName: item

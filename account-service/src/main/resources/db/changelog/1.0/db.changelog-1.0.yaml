@@ -1,0 +1,8 @@
+databaseChangeLog:
+
+  - include: { relativeToChangelogFile: true, file: item.yaml }
+  - include: { relativeToChangelogFile: true, file: saving.yaml }
+  - include: { relativeToChangelogFile: true, file: account.yaml }
+  - include: { relativeToChangelogFile: true, file: account_incomes.yaml }
+  - include: { relativeToChangelogFile: true, file: account_expenses.yaml }
+  - include: { relativeToChangelogFile: true, file: demo-dump.yaml }

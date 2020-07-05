@@ -1,25 +1,29 @@
 package com.piggymetrics.account.repository;
 
-import com.piggymetrics.account.domain.Account;
-import com.piggymetrics.account.domain.Currency;
-import com.piggymetrics.account.domain.Item;
-import com.piggymetrics.account.domain.Saving;
-import com.piggymetrics.account.domain.TimePeriod;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.data.mongo.DataMongoTest;
-import org.springframework.test.context.junit4.SpringRunner;
-
+import com.piggymetrics.account.domain.entity.Account;
+import com.piggymetrics.account.domain.entity.Item;
+import com.piggymetrics.account.domain.entity.Saving;
+import com.piggymetrics.account.domain.enums.Currency;
+import com.piggymetrics.account.domain.enums.TimePeriod;
+import com.piggymetrics.account.utils.TestPostgresContainer;
 import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.Date;
+import org.junit.ClassRule;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.test.context.junit4.SpringRunner;
 
 import static org.junit.Assert.assertEquals;
 
 @RunWith(SpringRunner.class)
-@DataMongoTest
-public class AccountRepositoryTest {
+@DataJpaTest
+public class AccountRepositoryIT {
+
+	@ClassRule
+	public static TestPostgresContainer postgres = TestPostgresContainer.getInstance();
 
 	@Autowired
 	private AccountRepository repository;
