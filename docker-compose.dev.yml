@@ -1,32 +1,43 @@
 version: '2.1'
 services:
   rabbitmq:
+    restart: "no"
     ports:
       - 5672:5672
 
   config:
     build: config
+    restart: "no"
     ports:
       - 8888:8888
 
   registry:
     build: registry
+    restart: "no"
 
   gateway:
     build: gateway
+    restart: "no"
 
   auth-service:
     build: auth-service
+    restart: "no"
     ports:
       - 5000:5000
+      - 7772:7772
+    environment:
+      JAVA_OPTS: "-Xmx200m -agentlib:jdwp=transport=dt_socket,address=7772,server=y,suspend=n"
+      DEBUG_PORT: 7772
 
   auth-mongodb:
     build: mongodb
+    restart: "no"
     ports:
       - 25000:27017
 
   account-service:
     build: account-service
+    restart: "no"
     ports:
       - 6000:6000
       - 7771:7771
@@ -36,31 +47,38 @@ services:
 
   account-postgres:
     build: postgresdb
+    restart: "no"
     ports:
       - 5432:5432
 
   statistics-service:
     build: statistics-service
+    restart: "no"
     ports:
       - 7000:7000
 
   statistics-mongodb:
     build: mongodb
+    restart: "no"
     ports:
       - 27000:27017
 
   notification-service:
     build: notification-service
+    restart: "no"
     ports:
       - 8000:8000
 
   notification-mongodb:
     build: mongodb
+    restart: "no"
     ports:
       - 28000:27017
 
   monitoring:
     build: monitoring
+    restart: "no"
 
   turbine-stream-service:
     build: turbine-stream-service
+    restart: "no"

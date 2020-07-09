@@ -62,6 +62,8 @@ services:
     depends_on:
       config:
         condition: service_healthy
+      auth-mongodb:
+        condition: service_started
     logging:
       options:
         max-size: "10m"
@@ -89,6 +91,8 @@ services:
     depends_on:
       config:
         condition: service_healthy
+      account-postgres:
+        condition: service_started
     logging:
       options:
         max-size: "10m"
