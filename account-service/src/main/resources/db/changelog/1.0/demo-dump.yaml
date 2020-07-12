@@ -157,3 +157,6 @@ databaseChangeLog:
             columns:
               - column: {name: incomes_id, value: 9}
               - column: {name: account_name, value: demo}
+      rollback:
+        - sql:
+            sql: truncate item CASCADE; truncate saving CASCADE; truncate account cascade; truncate account_incomes CASCADE; truncate account_expenses CASCADE;
