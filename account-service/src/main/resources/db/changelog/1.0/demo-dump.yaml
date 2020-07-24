@@ -1,7 +1,7 @@
 databaseChangeLog:
 
   - changeSet:
-      id: 000000-add-demo-account
+      id: 000000-add-demo-item
       author: Gasymov Ruslan
       changes:
         # --------------------- expenses ---------------------
@@ -88,8 +88,14 @@ databaseChangeLog:
               - column: {name: icon, value: edu}
               - column: {name: period, value: MONTH}
               - column: {name: title, value: Scholarship}
+      rollback:
+        - sql:
+            sql: DELETE FROM item WHERE id >= 1 AND id <= 9;
 
-        # --------------------- saving ---------------------
+  - changeSet:
+      id: 000000-add-demo-saving
+      author: Gasymov Ruslan
+      changes:
         - insert:
             tableName: saving
             columns:
@@ -99,8 +105,14 @@ databaseChangeLog:
               - column: {name: capitalization, value: false}
               - column: {name: deposit, value: true}
               - column: {name: interest, value: 3.32}
+      rollback:
+        - sql:
+            sql: DELETE FROM saving WHERE id = 1;
 
-        # --------------------- account ---------------------
+  - changeSet:
+      id: 000000-add-demo-account
+      author: Gasymov Ruslan
+      changes:
         - insert:
             tableName: account
             columns:
@@ -108,8 +120,14 @@ databaseChangeLog:
               - column: {name: last_seen, value: now()}
               - column: {name: saving_id, value: 1}
               - column: {name: note, value: "demo note"}
+      rollback:
+        - sql:
+            sql: DELETE FROM account WHERE name = 'demo';
 
-        # --------------------- account_expenses ---------------------
+  - changeSet:
+      id: 000000-add-demo-account_expenses
+      author: Gasymov Ruslan
+      changes:
         - insert:
             tableName: account_expenses
             columns:
@@ -145,8 +163,14 @@ databaseChangeLog:
             columns:
               - column: {name: expenses_id, value: 7}
               - column: {name: account_name, value: demo}
+      rollback:
+        - sql:
+            sql: DELETE FROM account_expenses WHERE expenses_id >= 1 AND expenses_id <= 7;
 
-        # --------------------- account_incomes ---------------------
+  - changeSet:
+      id: 000000-add-demo-account_incomes
+      author: Gasymov Ruslan
+      changes:
         - insert:
             tableName: account_incomes
             columns:
@@ -157,3 +181,6 @@ databaseChangeLog:
             columns:
               - column: {name: incomes_id, value: 9}
               - column: {name: account_name, value: demo}
+      rollback:
+        - sql:
+            sql: DELETE FROM account_incomes WHERE incomes_id >= 8 AND incomes_id <= 9;
