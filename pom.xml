@@ -22,6 +22,8 @@
 		<lombok.version>1.18.12</lombok.version>
 		<liquibase-core.version>3.10.0</liquibase-core.version>
 		<postgresql.version>42.2.12</postgresql.version>
+		<argon2.version>2.7</argon2.version>
+		<jna.version>5.5.0</jna.version>
 	</properties>
 
 	<dependencyManagement>
