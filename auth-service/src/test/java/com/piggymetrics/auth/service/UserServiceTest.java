@@ -6,6 +6,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.Optional;
 
@@ -19,6 +20,9 @@ public class UserServiceTest {
 
 	@Mock
 	private UserRepository repository;
+
+	@Mock
+	private PasswordEncoder encoder;
 
 	@Before
 	public void setup() {
@@ -44,6 +48,7 @@ public class UserServiceTest {
 		user.setPassword("password");
 
 		when(repository.findById(user.getUsername())).thenReturn(Optional.of(new User()));
+
 		userService.create(user);
 	}
 }

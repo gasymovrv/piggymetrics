@@ -1,7 +1,7 @@
 package com.piggymetrics.auth.config;
 
 import com.piggymetrics.auth.service.security.MongoUserDetailsService;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.Environment;
@@ -20,20 +20,18 @@ import org.springframework.security.oauth2.provider.token.store.InMemoryTokenSto
  */
 @Configuration
 @EnableAuthorizationServer
+@RequiredArgsConstructor
 public class OAuth2AuthorizationConfig extends AuthorizationServerConfigurerAdapter {
 
-    private TokenStore tokenStore = new InMemoryTokenStore();
+    private final TokenStore tokenStore = new InMemoryTokenStore();
     private final String NOOP_PASSWORD_ENCODE = "{noop}";
 
-    @Autowired
     @Qualifier("authenticationManagerBean")
-    private AuthenticationManager authenticationManager;
+    private final AuthenticationManager authenticationManager;
 
-    @Autowired
-    private MongoUserDetailsService userDetailsService;
+    private final MongoUserDetailsService userDetailsService;
 
-    @Autowired
-    private Environment env;
+    private final Environment env;
 
     @Override
     public void configure(ClientDetailsServiceConfigurer clients) throws Exception {
