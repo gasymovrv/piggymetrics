@@ -13,6 +13,8 @@ services:
   config:
     environment:
       CONFIG_SERVICE_PASSWORD: $CONFIG_SERVICE_PASSWORD
+      CONFIG_REPO_USER: $CONFIG_REPO_USER
+      CONFIG_REPO_PASSWORD: $CONFIG_REPO_PASSWORD
     image: config
     restart: always
     logging:

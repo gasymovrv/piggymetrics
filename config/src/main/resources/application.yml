@@ -1,17 +1,15 @@
-# данные настройки для чтения конфигов из файловой системы
 spring:
   cloud:
     config:
       server:
-        native:
-          search-locations: classpath:/shared
-  profiles:
-    active: native
+        git:
+          uri: https://github.com/gasymovrv/piggymetrics-config-repo.git
+          clone-on-start: true
+          username: ${CONFIG_REPO_USER}
+          password: ${CONFIG_REPO_PASSWORD}
   security:
     user:
       password: ${CONFIG_SERVICE_PASSWORD}
-# можно хранить конфиги в удаленном репозитории, тогда все что выше меняем на
-# spring.cloud.config.server.git.uri=https://github.com/xxx/spring-cloud-config-git-repo-example.git
 
 server:
   port: 8888
